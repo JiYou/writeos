@@ -12,7 +12,8 @@
 #           因为，但是在某些系统上，这么干可能
 #           会导致失败。但是如果是使用GNU的汇编
 #           器，那么就没有这个问题。
-CC      := gcc -pipe
+CFLAGS  := -I../
+CC      := gcc -pipe $(CFLAGS)
 AS      := as
 AR      := ar
 LD      := ld
