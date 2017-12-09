@@ -1,0 +1,36 @@
+#
+# Makefile fragment for the JOS kernel.
+# This is NOT a complete makefile;
+# you must run GNU make in the top-level directory
+# where the GNUmakefile is located.
+#
+
+BOOT_OBJS := $(OBJDIR)/boot/boot.o $(OBJDIR)/boot/main.o
+
+# 把main.c编译成main.o
+$(OBJDIR)/boot/%.o: boot/%.c
+	@echo + cc -Os $<
+	@mkdir -p $(@D)
+	$(V)$(CC) -nostdinc $(KERN_CFLAGS) -Os -c -o $@ $<
+
+# 把boot.S编译成boot.o
+$(OBJDIR)/boot/%.o: boot/%.S
+	@echo + as $<
+	@mkdir -p $(@D)
+	$(V)$(CC) -nostdinc $(KERN_CFLAGS) -c -o $@ $<
+
+# 这里利用main.o boot.o生成boot文件
+# 注意，在编译appen.c的时候，这个程序是一个普通的C程序
+# 就使用一盘的编译方式好了。
+# append.c的作用是因为，当boot.S想要调用C语言的时候，
+# 由于要把C的代码，直接放到boot.S的代码后面。那么boot.S
+# 后面就不能再把.org 510位移支510这里。这会导致编译出来的
+# 代码太大
+$(OBJDIR)/boot/boot: $(BOOT_OBJS)
+	@echo + ld boot/boot
+	$(V)$(LD) $(LDFLAGS) -N -e start -Ttext 0x7C00 -o $@.out $^
+	$(V)$(OBJDUMP) -S $@.out >$@.asm
+	$(V)$(OBJCOPY) -S -O binary -j .text $@.out $@
+	$(V)$(CC) boot/append.c -o $(OBJDIR)/boot/append
+	$(OBJDIR)/boot/append $(OBJDIR)/boot/boot
+

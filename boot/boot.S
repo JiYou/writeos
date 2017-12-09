@@ -1,10 +1,5 @@
 #include <inc/mmu.h>
 
-# 刚进入到启动分区时的情形
-# Start the CPU: switch to 32-bit protected mode, jump into C.
-# The BIOS loads this code from the first sector of the hard disk into
-# memory at physical address 0x7c00 and starts executing in real mode
-# with %cs=0 %ip=7c00.
 
 # 代码段选择子
 .set PROT_MODE_CSEG, 0x8         # kernel code segment selector
@@ -79,7 +74,11 @@ protcseg:
 	movw    %ax, %ss                # -> SS: Stack Segment
 
 	# 这里就可以开始调用C语言了
-
+	# 这里初始化栈顶
+	movl	$start, %esp
+	# 压入第一个参数 
+	pushl $0xb8000
+	call ClearScreen
 	# 是的，启动功能到这里就结束了
 	# 这里不再演示更多的功能
 	# 于是直接停机
@@ -105,8 +104,11 @@ gdtdesc:
 	# 接下来是表示gdt描述符表的地址在哪里
 	.long gdt
 
-END:
-	# 启动扇区必须是512字节大小
-	.org 510
-	# 最后两个字节必须是固定的
-	.word 0xaa55
+# 如果要调用C语言，这里就能再这么写了。因为这么写，会直接导致程序出问题。
+# 也就是说，会在编译的时候，编译出来的boot.o就直接到了512。然后编译出来的
+# C程序又接在这512后面。所以编译出来的总是比512大。
+#END:
+#	# 启动扇区必须是512字节大小
+#	.org 510
+#	# 最后两个字节必须是固定的
+#	.word 0xaa55
