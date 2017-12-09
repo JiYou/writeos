@@ -1,0 +1,5 @@
+megs: 32
+floppya: 1_44=temp.bin, status=inserted
+boot: floppy
+log: bochsout.txt
+mouse: enabled=0
