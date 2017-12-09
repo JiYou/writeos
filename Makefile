@@ -5,7 +5,7 @@ temp.bin: hello.asm
 
 .PHONY: clean
 clean:
-	rm -rf temp.bin
+	rm -rf temp.bin bochsout.txt
 
 .PHONY: run
 run:
