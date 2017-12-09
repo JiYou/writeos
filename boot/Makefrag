@@ -11,7 +11,7 @@ BOOT_OBJS := $(OBJDIR)/boot/boot.o $(OBJDIR)/boot/main.o
 $(OBJDIR)/boot/%.o: boot/%.c
 	@echo + cc -Os $<
 	@mkdir -p $(@D)
-	$(V)$(CC) -nostdinc $(KERN_CFLAGS) -Os -c -o $@ $<
+	$(V)$(CC) -nostdinc $(KERN_CFLAGS) -O -c -o $@ $<
 
 # 把boot.S编译成boot.o
 $(OBJDIR)/boot/%.o: boot/%.S
@@ -26,6 +26,11 @@ $(OBJDIR)/boot/%.o: boot/%.S
 # 由于要把C的代码，直接放到boot.S的代码后面。那么boot.S
 # 后面就不能再把.org 510位移支510这里。这会导致编译出来的
 # 代码太大
+# 也需要注意的是：这里在生成boot分区的时候，只是把代码段拷贝
+# 了出去。而数据段是没有拷贝出去的。所以不要在C代码中使用
+# 与与数据段相关的操作。比如
+# char *str = "abc";
+# 由于"abc"没有拷贝过去。所以在运行的时候就容易出问题。
 $(OBJDIR)/boot/boot: $(BOOT_OBJS)
 	@echo + ld boot/boot
 	$(V)$(LD) $(LDFLAGS) -N -e start -Ttext 0x7C00 -o $@.out $^

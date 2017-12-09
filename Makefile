@@ -69,11 +69,20 @@ all: $(OBJDIR)/boot/hd.img
 include boot/Makefrag
 
 $(OBJDIR)/boot/hd.img: $(OBJDIR)/boot/boot
-	bximage -hd -size=10 -q -mode=flat $(OBJDIR)/boot/hd.img
+	rm -rf $(OBJDIR)/boot/hd.img
+	bximage -hd -size=10 -q -mode=flat $(OBJDIR)/boot/hd.img >/dev/null
 	dd if=$(OBJDIR)/boot/boot of=$(OBJDIR)/boot/hd.img bs=512 seek=0 conv=notrunc
-	cp -rf bochsrc $(OBJDIR)/boot/
+	cp -rf .bochsrc $(OBJDIR)/boot/
 
 
 .PHONY: clean
 clean:
-	rm -rf $(OBJDIR)
+	rm -rf $(OBJDIR) bochsout.txt
+
+.PHONY: kill
+kill:
+	killall bochs
+
+.PHONY: run
+run:
+	cd $(OBJDIR)/boot/ && bochs

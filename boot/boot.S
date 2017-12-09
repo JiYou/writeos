@@ -76,12 +76,13 @@ protcseg:
 	# 这里就可以开始调用C语言了
 	# 这里初始化栈顶
 	movl	$start, %esp
-	# 压入第一个参数 
-	pushl $0xb8000
 	call ClearScreen
+show_str:
+	call PrintString
 	# 是的，启动功能到这里就结束了
 	# 这里不再演示更多的功能
 	# 于是直接停机
+	jmp show_str
 	hlt
 
 # 强制2^2个字节对齐
