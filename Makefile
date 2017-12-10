@@ -72,6 +72,7 @@ $(OBJDIR)/boot/hd.img: $(OBJDIR)/boot/boot
 	rm -rf $(OBJDIR)/boot/hd.img
 	bximage -hd -size=10 -q -mode=flat $(OBJDIR)/boot/hd.img >/dev/null
 	dd if=$(OBJDIR)/boot/boot of=$(OBJDIR)/boot/hd.img bs=512 seek=0 conv=notrunc
+	dd if=$(OBJDIR)/kern/kernel of=$(OBJDIR)/boot/hd.img seek=1 conv=notrunc
 	cp -rf .bochsrc $(OBJDIR)/boot/
 
 
