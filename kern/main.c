@@ -1,6 +1,8 @@
 void PrintString() {
 	char *p = (char *)0xb8000;
-	*p = 'H';
-	++p;
-	*p = 0x07;
+	const char *str = "Hello world!";
+	while (*str) {
+		*p++ = *str++;
+		*p++ = 0x07;
+	}
 }

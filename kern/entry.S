@@ -1,4 +1,4 @@
-#define    KERNBASE    0xF0000000
+#define    KERNBASE    0x00000000
 #define RELOC(x) ((x) - KERNBASE)
 
 .text
