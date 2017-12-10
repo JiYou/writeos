@@ -60,15 +60,16 @@ CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 &
 LDFLAGS := -m elf_i386
 KERN_CFLAGS := $(CFLAGS) -DJOS_KERNEL -gstabs
 
-all: $(OBJDIR)/boot/hd.img
+all: $(OBJDIR)/boot/hd.img $(OBJDIR)/kern/kernel
 # Include Makefrags for subdirectories
 # 注意，这里采用的是include的方式，所以在根目录上运行make的时候，实际上
 # 和cd boot目录下运行make有着根本的不同。
 # 在boot目录运行，路径是相对boot而言的，但是
 # 如果是在根目录上make，那么Makefrag也需要把路径写成相对于根目录的方式
 include boot/Makefrag
+include kern/Makefrag
 
-$(OBJDIR)/boot/hd.img: $(OBJDIR)/boot/boot
+$(OBJDIR)/boot/hd.img: $(OBJDIR)/boot/boot $(OBJDIR)/kern/kernel
 	rm -rf $(OBJDIR)/boot/hd.img
 	bximage -hd -size=10 -q -mode=flat $(OBJDIR)/boot/hd.img >/dev/null
 	dd if=$(OBJDIR)/boot/boot of=$(OBJDIR)/boot/hd.img bs=512 seek=0 conv=notrunc
