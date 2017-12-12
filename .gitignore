@@ -1,3 +1,5 @@
 bochsout.txt
 temp.bin
-
+./obj
+./obj/*
+obj/*

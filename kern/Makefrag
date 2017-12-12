@@ -1,0 +1,33 @@
+#
+# Makefile fragment for the JOS kernel.
+# This is NOT a complete makefile;
+# you must run GNU make in the top-level directory
+# where the GNUmakefile is located.
+#
+
+#gcc -pipe -nostdinc    -O1 -fno-builtin -I. -MD -fno-omit-frame-pointer -std=gnu99 -static -Wall -Wno-format -Wno-unused -Werror -gstabs -m32 -fno-tree-ch -fno-stack-protector -DJOS_KERNEL -gstabs -c -o entry.o entry.S
+#gcc -pipe -nostdinc    -O1 -fno-builtin -I. -MD -fno-omit-frame-pointer -std=gnu99 -static -Wall -Wno-format -Wno-unused -Werror -gstabs -m32 -fno-tree-ch -fno-stack-protector -DJOS_KERNEL -gstabs  -c -o main.o main.c
+#ld -o obj/kern/kernel -m elf_i386 -T kern/kernel.ld -nostdlib entry.o main.o -o kernel
+
+KERN_OBJS := $(OBJDIR)/kern/entry.o $(OBJDIR)/kern/main.o
+KERN_LDFLAGS := $(LDFLAGS) -T kern/kernel.ld -nostdlib
+
+
+# 把main.c编译成main.o
+$(OBJDIR)/kern/%.o: kern/%.c
+	@echo + cc -Os $<
+	@mkdir -p $(@D)
+	$(V)$(CC) -nostdinc $(KERN_CFLAGS) -O -c -o $@ $<
+
+# 把entry.S编译成entry.o
+$(OBJDIR)/kern/%.o: kern/%.S
+	@echo + as $<
+	@mkdir -p $(@D)
+	$(V)$(CC) -nostdinc $(KERN_CFLAGS) -c -o $@ $<
+
+$(OBJDIR)/kern/kernel: $(KERN_OBJS) kern/kernel.ld
+	@echo + ld $@
+	$(V)$(LD) -o $@ $(KERN_LDFLAGS) $(KERN_OBJS)
+	$(V)$(OBJDUMP) -S $@ > $@.asm
+	$(V)$(NM) -n $@ > $@.sym
+
