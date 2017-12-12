@@ -31,4 +31,35 @@
 #define STA_R       0x2     // Readable (executable segments)
 #define STA_A       0x1     // Accessed
 
+// Control Register flags
+#define CR0_PE          0x00000001      // Protection Enable
+#define CR0_MP          0x00000002      // Monitor coProcessor
+#define CR0_EM          0x00000004      // Emulation
+#define CR0_TS          0x00000008      // Task Switched
+#define CR0_ET          0x00000010      // Extension Type
+#define CR0_NE          0x00000020      // Numeric Errror
+#define CR0_WP          0x00010000      // Write Protect
+#define CR0_AM          0x00040000      // Alignment Mask
+#define CR0_NW          0x20000000      // Not Writethrough
+#define CR0_CD          0x40000000      // Cache Disable
+#define CR0_PG          0x80000000      // Paging
+
+// 这里定义一个页表里面offset所占用的位数。
+#define PGSHIFT        12        // log2(PGSIZE)
+// 一页为4KB
+#define PGSIZE        4096        // bytes mapped by a page
+// 一个页表里面有多少个表项
+#define NPTENTRIES    1024        // page table entries per page table
+// 一个页目录表里面有多少表项
+#define NPDENTRIES    1024        // page directory entries per page directory
+
+// 一个页表，一页为4KB，一共就是4MB了
+#define PTSIZE        (PGSIZE*NPTENTRIES) // bytes mapped by a page directory entry
+
+#define PDXSHIFT    22        // offset of PDX in a linear address
+
+// 页表的属性项
+#define PTE_P        0x001    // Present
+#define PTE_W        0x002    // Writeable
+
 #endif

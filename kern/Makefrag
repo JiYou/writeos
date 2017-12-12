@@ -9,7 +9,7 @@
 #gcc -pipe -nostdinc    -O1 -fno-builtin -I. -MD -fno-omit-frame-pointer -std=gnu99 -static -Wall -Wno-format -Wno-unused -Werror -gstabs -m32 -fno-tree-ch -fno-stack-protector -DJOS_KERNEL -gstabs  -c -o main.o main.c
 #ld -o obj/kern/kernel -m elf_i386 -T kern/kernel.ld -nostdlib entry.o main.o -o kernel
 
-KERN_OBJS := $(OBJDIR)/kern/entry.o $(OBJDIR)/kern/main.o
+KERN_OBJS := $(OBJDIR)/kern/entry.o $(OBJDIR)/kern/main.o $(OBJDIR)/kern/entrypgdir.o
 KERN_LDFLAGS := $(LDFLAGS) -T kern/kernel.ld -nostdlib
 
 
